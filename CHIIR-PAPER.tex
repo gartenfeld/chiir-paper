@@ -1,0 +1,92 @@
+%%
+%% CHIIR 2027 short-paper review starter.
+%% Maximum four pages for body content; references may extend beyond page four.
+%% The review submission must remain anonymous.
+%%
+%% Commands for TeXCount
+%TC:macro \cite [option:text,text]
+%TC:macro \citep [option:text,text]
+%TC:macro \citet [option:text,text]
+%TC:envir table 0 1
+%TC:envir table* 0 1
+%TC:envir tabular [ignore] word
+%TC:envir displaymath 0 word
+%TC:envir math 0 word
+%TC:envir comment 0 0
+%%
+\documentclass[sigconf,natbib,anonymous]{acmart}
+
+\AtBeginDocument{%
+  \providecommand\BibTeX{{%
+    Bib\TeX}}}
+
+%% Replace rights metadata only when instructed for the camera-ready version.
+\setcopyright{none}
+\copyrightyear{2027}
+\acmYear{2027}
+\acmDOI{}
+\acmConference[CHIIR '27]{ACM SIGIR Conference on Human Information Interaction and Retrieval}{March 7--11, 2027}{Berlin, Germany}
+\acmISBN{}
+
+\begin{document}
+\raggedbottom
+
+\title{Your Paper Title}
+
+\author{Anonymous Author(s)}
+\affiliation{%
+  \institution{Anonymous Institution}
+  \country{Anonymous}
+}
+
+\renewcommand{\shortauthors}{Anonymous Author(s)}
+
+\begin{abstract}
+Your abstract here.
+\end{abstract}
+
+%% Generate CCS concepts at https://dl.acm.org/ccs/ccs.cfm
+\begin{CCSXML}
+<ccs2012>
+ <concept>
+  <concept_id>00000000.0000000.0000000</concept_id>
+  <concept_desc>Replace with correct CCS terms</concept_desc>
+  <concept_significance>500</concept_significance>
+ </concept>
+</ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Replace with correct CCS terms}
+
+\input{keywords}
+
+\maketitle
+
+\section{Introduction}
+Your introduction here.
+
+\section{Related Work}
+Your related work here.
+
+\section{Method}
+Your method here.
+
+\section{Results}
+Your results here.
+
+\section{Discussion}
+Your discussion here.
+
+\section{Conclusion}
+Your conclusion here.
+
+%% Acknowledgements must be omitted from the anonymous review version.
+
+%% Enable this block only after the paper contains at least one real citation.
+% \begingroup
+% \setlength{\bibsep}{0pt plus 0.3\baselineskip}
+% \bibliographystyle{ACM-Reference-Format}
+% \bibliography{references}
+% \endgroup
+
+\end{document}
