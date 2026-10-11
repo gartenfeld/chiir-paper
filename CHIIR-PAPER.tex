@@ -18,6 +18,10 @@
 %% Bare boolean flags are equivalent and work with the installed acmart class.
 \documentclass[sigconf,natbib,anonymous]{acmart}
 
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+\setkeys{acmart.cls}{balance=false}
+
 \AtBeginDocument{%
   \providecommand\BibTeX{{%
     Bib\TeX}}}
@@ -34,7 +38,7 @@
 \begin{document}
 \raggedbottom
 
-\title{Your Paper Title}
+\title{Facsimile-Linked Digital Text Processing for Critical Editions}
 
 \author{Anonymous Author(s)}
 \affiliation{%
@@ -45,51 +49,179 @@
 \renewcommand{\shortauthors}{Anonymous Author(s)}
 
 \begin{abstract}
-Your abstract here.
+Comparing revisions across historical editions requires historians to locate corresponding passages, inspect textual changes, and verify each reading against printed evidence.
+This paper presents a facsimile-linked variation-browsing workflow in Edition Reader, a workbench in pilot use for a critical edition of Hume's \emph{History of England}.
+The workflow organises page-level layout and optical character recognition, human correction, structural alignment, automated text comparison, and historian review as separate but connected stages: annotators verify page geometry, copytext, and paragraph links; comparison surfaces candidate differences; and historians can retrace a selected candidate to edition-specific page regions.
+A structured walkthrough, interface artefacts, and operational records from an incomplete six-edition upload document the implemented interaction path and the human work on which it depends.
+The case identifies recognition quality, correction state, and partial alignment as limits on downstream comparison.
+It contributes a bounded interaction pattern for machine-mediated scholarly comparison while leaving editorial significance to historians; it does not establish faster review, comprehensive variant detection, or transfer beyond this case.
 \end{abstract}
 
-%% Generate CCS concepts at https://dl.acm.org/ccs/ccs.cfm
 \begin{CCSXML}
 <ccs2012>
  <concept>
-  <concept_id>00000000.0000000.0000000</concept_id>
-  <concept_desc>Replace with correct CCS terms</concept_desc>
+  <concept_id>10002951.10003227.10003392</concept_id>
+  <concept_desc>Information systems~Digital libraries and archives</concept_desc>
   <concept_significance>500</concept_significance>
+ </concept>
+ <concept>
+  <concept_id>10003120.10003121.10003124</concept_id>
+  <concept_desc>Human-centered computing~Interactive systems and tools</concept_desc>
+  <concept_significance>300</concept_significance>
+ </concept>
+ <concept>
+  <concept_id>10010405.10010469</concept_id>
+  <concept_desc>Applied computing~Arts and humanities</concept_desc>
+  <concept_significance>300</concept_significance>
  </concept>
 </ccs2012>
 \end{CCSXML}
 
-\ccsdesc[500]{Replace with correct CCS terms}
+\ccsdesc[500]{Information systems~Digital libraries and archives}
+\ccsdesc[300]{Human-centered computing~Interactive systems and tools}
+\ccsdesc[300]{Applied computing~Arts and humanities}
 
 \input{keywords}
 
 \maketitle
 
 \section{Introduction}
-Your introduction here.
+
+Comparing historical editions is an information task before it becomes an interpretive one.
+A historian must locate corresponding passages in differently paginated volumes, distinguish textual revision from print or recognition noise, compare local readings, and verify a candidate against the printed page.
+A computed difference cannot support historical interpretation when its source or the transformations that produced it are no longer inspectable.
+The useful unit of seeking is therefore not only a document or page, but a \emph{candidate site of variation}: a location where aligned edition text differs and requires scholarly review.
+
+David Hume's \emph{History of England} makes this problem concrete.
+The work appeared in several arrangements and editions, and Hume revised its wording across his lifetime.
+The commonly used Liberty Fund edition presents the final text without a complete apparatus of changes~\cite{hume1983liberty}; an earlier electronic edition records selected variation but does not provide a complete account~\cite{vanholthoon2000}.
+Preparing a new critical edition consequently requires both computational comparison and continued access to the evidence in particular printed witnesses.
+
+Edition Reader is a working editorial workbench developed for this setting.
+Upstream components produce page-level geometry and optical character recognition (OCR) text from page images.
+Edition Reader stores these outputs as editable page, region, and line records, supports correction and structural alignment, computes textual differences within aligned units, and presents candidates with links to corresponding page-image regions.
+This paper asks: \emph{How does an implemented facsimile-linked browsing workflow connect computationally surfaced candidate variation sites to inspectable source evidence across historical editions, and where does that workflow remain dependent on human correction and structural alignment?}
+It contributes an evidence-linked interaction pattern documented through a structured prototype walkthrough, three interface examples, and operational records from an incomplete six-edition upload.
+The evidence establishes implemented capability and its dependencies, not efficiency, accuracy, completeness, or usability.
 
 \section{Related Work}
-Your related work here.
 
-\section{Method}
-Your method here.
+Historians' digital research joins searching and reading with collecting, processing, analysing, and writing~\cite{korkeamaki2019interacting}.
+Studies of authentic historical tasks further argue for task-specific access points that connect scholars' questions to relevant parts of digital documents~\cite{kumpulainen2020historical}.
+For edition comparison, this requirement extends beyond retrieval: a selected difference must remain connected to the witness, passage, and printed surface against which it can be assessed.
 
-\section{Results}
-Your results here.
+Existing systems address parts of this path.
+Transkribus combines recognition, transcription, and correction of historical documents~\cite{kahle2017transkribus}.
+CollateX separates tokenisation, alignment, analysis, and visualisation while preserving human interpretation as a distinct activity~\cite{haentjensdekker2014collation}.
+The Versioning Machine presents textual witnesses alongside images and encoded variation~\cite{schreibman2003versioning}, while web-based collation tools such as Juxta, LERA, and Variance Viewer provide different workflows and visualisations for comparing encoded texts~\cite{roeder2020collation}.
+General human--AI interaction guidance likewise stresses visibility, correction, and user control over consequential output~\cite{amershi2019guidelines}.
+The present case does not claim these functions independently as new; it isolates the review path from an aligned passage to a computed candidate and back to edition-specific page evidence, while documenting the correction and alignment state on which that path depends.
 
-\section{Discussion}
-Your discussion here.
+\section{Workflow and Interaction Method}
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{pipeline-diagram.png}
+  \caption{Edition Reader receives page images and layout/OCR data, preserves correction and alignment as separate reviewable stages, and connects comparison output to historian review and page-image evidence. The diagram provides system context for the interaction trace.}
+  \Description{A left-to-right workflow begins with scanned pages and upstream layout and OCR processing, continues through Edition Reader import, correction, structural landmarks, and text comparison, and ends with historian review and links from digital text to regions on page images.}
+  \label{fig:pipeline}
+\end{figure*}
+
+The interaction path begins with project-specific page-level XML containing layout geometry and OCR text (Figure~\ref{fig:pipeline}).
+Edition Reader imports a source image together with edition, volume, page, region, and line identifiers; line records retain both text and coordinates on the page.
+Imported values remain distinguishable from later attributed edits.
+This distinction matters downstream because a string displayed in comparison can be followed through its logical unit and constituent lines to the regions from which it was transcribed.
+
+Correction establishes the records needed for later retrieval.
+An annotator first reconciles page order, printed numbering, duplicate pages, and skipped scans.
+In geometry views, numbered boxes are overlaid on the facsimile; the annotator selects a region or line, adjusts a misplaced boundary, drops an artefact, or adds a missing line.
+In copytext views, selecting a line connects its OCR string with a cropped image of the same line, and a correction is saved without discarding the imported value.
+These stages do not certify the entire corpus: they expose correction points and preserve the page location needed for later source inspection.
+
+Structural alignment turns corrected page text into comparable units.
+Logical nodes represent chapters, sections, and paragraphs independently of their page positions.
+First-pass rules use features such as headings, capitalised paragraph openings, and vertical gaps, after which annotators correct node boundaries.
+Current practice links chapters and paragraphs from source editions to the usual 1778 lemma.
+Where one edition splits or merges a paragraph, a positional marker identifies a pseudo-paragraph so that part of one paragraph can correspond to a whole paragraph elsewhere.
+
+Comparison remains separate from alignment.
+Lines within an aligned paragraph are joined into running text, including end-of-line hyphen handling; sentences are segmented online and gross-matched for comparability rather than stored as persistent objects.
+The interface then computes word- and character-level differences and groups the diff output into candidate sites on demand.
+It displays edition labels, structural breadcrumbs, and page references, while retained string-to-line mappings connect a selected range to page-image regions.
+The computation narrows the material presented for review; the historian decides whether a difference reflects OCR, typography, an accidental reading, or a historically meaningful revision.
+
+\section{Case Evidence and Walkthrough}
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{interaction-sequence.png}
+  \caption{Evidence-linked variation browsing through three documented examples. (a) The alignment view links Chapter~I paragraphs across the 1778 and 1762 editions; (b) the comparison view highlights word- and character-level differences in a Charles~I passage from 1762 and 1778; and (c) the candidate view places readings from the passage beginning ``The Scots, who began'' beside edition-specific facsimile evidence. The panels document separate operations, not one recorded session.}
+  \Description{Three interface panels are arranged from left to right. The first places two facsimile pages beside a central column of paragraph-link controls. The second presents two parallel text columns with coloured difference highlights, edition selectors, and page references. The third shows a selected paragraph with marked candidate variations and corresponding page-image evidence for multiple editions.}
+  \label{fig:sequence}
+\end{figure*}
+
+The case evidence consists of the working prototype, the interface artefacts in Figure~\ref{fig:sequence}, and a database snapshot from 11 September 2026.
+The screenshots were selected because they expose the representations at three points in the review path.
+They show related operations and overlapping historical context, but they are separate examples rather than a continuous user session.
+The operational records arose from ordinary project activity rather than an experiment, and prototype use is deployment context rather than participant evidence.
+
+\textbf{Establishing correspondence.}
+Figure~\ref{fig:sequence}a shows Chapter~I, \S1, beginning ``The curiosity, entertained by all civilized nations''.
+The central controls link the paragraph in 1778, volume~I, page~37, with its manifestation in 1762, volume~I, page~15.
+The pages differ in typesetting and pagination, while the link records the logical correspondence that comparison requires.
+The annotator can inspect both page contexts before confirming or correcting that relationship.
+
+\textbf{Inspecting computed difference.}
+Figure~\ref{fig:sequence}b compares a passage about the ``lords of articles'' in Charles~I, Chapter~LV: 1762 page~283 and 1778 page~426.
+The parallel view highlights local substitutions and insertions, including \emph{Scots}/\emph{Scottish} and the addition of \emph{temporal}.
+These highlights report differences between the current strings.
+They do not by themselves determine whether a reading is authorial, typographical, or introduced by OCR.
+
+\textbf{Returning to printed evidence.}
+Figure~\ref{fig:sequence}c reorganises a passage beginning ``The Scots, who began these fatal commotions'' around selected candidate readings.
+The interface presents \emph{Scots} for 1778, 1773, 1763, and 1762 against \emph{Scotch} for 1754, and \emph{who began} in 1778 against \emph{who first began} in earlier editions.
+Edition-specific facsimile snippets remain beside the digital readings, allowing each string to be checked against print and in surrounding page context.
+The three examples consequently expose correspondence, computed difference, and source evidence, while leaving their editorial significance unresolved.
+
+The operational snapshot describes the conditions under which this path currently works.
+The incomplete upload contains six editions (1754, 1757, 1762, 1763, 1773, and 1778) and 10,695 page records.
+Project history records 6,333 human copytext edits across five editions and 14 volumes, together with 3,873 human geometry edits across all six uploaded editions.
+The snapshot also contains 160 chapter links from five source editions to the lemma and 3,096 paragraph links from four source editions, including 15 pseudo-paragraph links for split or merged units.
+These are stage-specific records, not completion or quality measures.
+Candidate sites are computed on demand, so there is no stored site count and no audit of their recall.
+
+The pseudo-paragraphs make one dependency especially visible.
+A split or merged passage cannot be treated as a simple one-to-one paragraph match; an annotator must identify the corresponding range before comparison has a defensible unit.
+Likewise, an apparent string difference can survive from incorrect OCR or line geometry.
+The interface keeps those upstream records available for correction, but the present evidence does not establish how often users detect such errors or how correction affects candidate quality.
+
+\section{Discussion and Limitations}
+
+The case frames a variation site as a navigable information object rather than a detached diff.
+The user can move from a structural overview to parallel strings, then to the printed witness and neighbouring context.
+Intermediate records make the machine mediation inspectable: page geometry, copytext edits, paragraph links, and comparison output remain distinct, and a problem can be traced to the stage at which it arose.
+Humanist--corpus interaction here therefore means moving through structured corpus records to locate, compare, and verify evidence, rather than receiving a generated historical answer detached from its source.
+
+This account is bounded by one project and an incomplete corpus state.
+OCR and correction are uneven, structural links are partial, sentence segmentation and candidate grouping are heuristic, and no audit establishes alignment accuracy or variation-site completeness.
+The paper reports no timing, task comparison, usability measure, or formal participant study, and it assumes no anonymous code or data artefact.
+Facsimile and database rights also constrain redistribution.
+Transfer to other typographies, document structures, or editorial conventions remains untested.
+Future agents might compile natural-language questions into versioned queries over the verified records and return source-linked results, but that interaction is a design horizon rather than an evaluated capability.
+The nearest evaluation is a small, ethically reviewed study of historians verifying a defined candidate set, with task outcomes, omissions, and failure cases recorded.
 
 \section{Conclusion}
-Your conclusion here.
+
+Edition Reader connects paragraph alignment, on-demand textual comparison, and edition-specific page regions in one inspectable review path.
+The Hume case documents that path under partial correction and alignment: computation presents candidate differences, while historians retain responsibility for deciding what the printed evidence means.
+The next step is to evaluate candidate-verification behaviour and outcomes rather than to broaden the present claim to efficiency, completeness, or transfer.
 
 %% Acknowledgements must be omitted from the anonymous review version.
 
-%% Enable this block only after the paper contains at least one real citation.
-% \begingroup
-% \setlength{\bibsep}{0pt plus 0.3\baselineskip}
-% \bibliographystyle{ACM-Reference-Format}
-% \bibliography{references}
-% \endgroup
+\begingroup
+\setlength{\bibsep}{0pt plus 0.3\baselineskip}
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{references}
+\endgroup
 
 \end{document}
