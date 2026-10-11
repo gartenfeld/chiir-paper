@@ -14,14 +14,17 @@
 %TC:envir math 0 word
 %TC:envir comment 0 0
 %%
+%% The CHIIR guide writes these booleans as natbib=true and anonymous=true.
+%% Bare boolean flags are equivalent and work with the installed acmart class.
 \documentclass[sigconf,natbib,anonymous]{acmart}
 
 \AtBeginDocument{%
   \providecommand\BibTeX{{%
     Bib\TeX}}}
 
-%% Replace rights metadata only when instructed for the camera-ready version.
-\setcopyright{none}
+%% Keep the permissions block in the review PDF, as required by CHIIR.
+%% Replace placeholder publication metadata when instructed for camera-ready.
+\setcopyright{acmlicensed}
 \copyrightyear{2027}
 \acmYear{2027}
 \acmDOI{}
