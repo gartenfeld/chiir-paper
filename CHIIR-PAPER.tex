@@ -48,7 +48,7 @@ Preparing a critical edition of a historical work requires comparing textual var
 For large works with many editions, the task may become too laborious to tackle manually.
 This paper presents a modular digitisation and automation pipeline, illustrated with a working interface, for undertaking such scholarly projects in the humanities.
 The pipeline ingests upstream page data containing layout geometry and OCR text, maps display to page images, supports various annotation tasks for page inventory, layout geometry, and text correction, automates logical structure assignment, and shortlists textual changes across editions for examination while retracing the digital text segments to page-image evidence.
-This paper describes its implementation in an ongoing critical-edition project of substantial scope: David Hume's \emph{History of England}, with field experts as users, and demonstrates that the modular pipeline approach can help historians get to interpretive work sooner while preserving traceable bibliography to source pages, and that the adaptable conceptual design can generalise to similar document-centric digital humanities projects.
+This paper describes its implementation in an ongoing critical-edition project of substantial scope: David Hume's \emph{History of England}, with field experts as users, and demonstrates that the modular pipeline approach can help historians get to interpretive work sooner while preserving traceable bibliography to source pages, and that the adaptable conceptual design can generalise to similar document-centric digital humanities projects as well.
 \end{abstract}
 
 \begin{CCSXML}
@@ -102,7 +102,7 @@ The interface is currently in pilot use, supporting a live editorial project in 
 This paper makes three contributions.
 First, it describes a modular pipeline that imports upstream page data and produces editable digital layout and text objects that can be interfaced with both machine processing and human annotation.
 Second, it presents the workflow for layout and text correction, landmark assignment, text comparison, and scholarly review.
-Third, it uses the \emph{History of England} project to show how such a pipeline supports expert historians in a critical-edition workflow, and reports what the comparison procedures emit on one chapter.
+Third, it uses the \emph{History of England} project to show how such a pipeline supports expert historians in a critical-edition workflow, and reports what the comparison procedures emit on one chapter of the ongoing editorial project.
 
 \begin{figure*}[t]
   \centering
@@ -174,7 +174,7 @@ The historian decides whether a difference is typographical, accidental, or hist
 \textbf{Traceability.}
 Both procedures display the spans already computed.
 They do not recompute the comparison in order to paint the page.
-Each digital segment is traced to bounding boxes on the page image of the relevant edition, so the same reading can be checked in its printed line and in the surrounding context.
+Each digital segment is traced to bounding boxes on the page image of the relevant edition, so the same reading can be checked in its printed line and in the surrounding context of the page.
 
 \begin{figure}[t]
   \centering
@@ -194,8 +194,9 @@ Each digital segment is traced to bounding boxes on the page image of the releva
 
 \begin{figure*}[t]
   \centering
+  \setlength{\abovecaptionskip}{2pt}
   \includegraphics[width=\textwidth]{candidate-facsimile.png}
-  \caption{Candidate readings for the passage beginning ``The Scots, who began'', with edition-specific facsimile snippets across 1778--1754.}
+  \caption{Candidate readings with edition-specific facsimile snippets across 1778--1754.}
   \Description{A paragraph navigator appears on the left, a selected passage with marked candidate readings in the centre, and stacked cropped facsimile lines labelled by edition year on the right.}
   \label{fig:candidate}
 \end{figure*}
@@ -206,7 +207,7 @@ The comparison procedures were run on 30 October 2026 over Chapter~LV of the 177
 Line text is the current editorial reading, joined by the same hyphen rules as the interface.
 Five editions have aligned material: 1754, 1762, 1763, 1773, and 1778.
 The 1757 edition is absent because no chapter is aligned, not because the texts agree, and 1754 and 1762 print the passage as Chapter~VI.
-No hand-made collation was used as an answer key, so the counts describe what the procedures emit.
+No hand-made collation was used as an answer key, so the counts describe what the procedures emit from the editorial readings now in use.
 
 \begin{table}[t]
   \caption{Chapter scale for the five aligned editions. The 1778 text is the lemma.}
@@ -258,7 +259,7 @@ The 1754 counts in Table~\ref{tab:pairwise} sum to 20,425, one above the 20,424 
     Long-s-only replacements excluded & 165 \\
     Grouped candidate sites & 2,398 \\
     Modification sites & 1,364 (56.9\%) \\
-    Gap on lemma & 791 (33.0\%) \\
+    Deletion in lemma & 791 (33.0\%) \\
     Lemma wording absent as a block & 243 (10.1\%) \\
     Median sites per lemma paragraph & 14 \\
     Lemma words inside site cores & 3,127/19,676 (15.9\%) \\
@@ -275,31 +276,32 @@ At the opening site the lemma reads \emph{Scots}; 1754 reads \emph{Scotch}, whil
 That cell shows the form of an entry.
 It is not a summary of Hume's revision history.
 
-One paragraph link dominates the empty sites.
-The lemma paragraph is 62 words, while the paragraph aligned to it is 292 words in 1754 and 252 words in 1762 and 1763; the 1773 extent matches the lemma at 62 words.
-The multi-edition procedure does not re-split paragraphs, so the extra words become gaps on the lemma.
-That single link produces 610 sites, 604 of them empty, and those 604 account for most of the 791 gaps in the chapter.
-Without that paragraph the mean falls from 21.8 to 16.4 sites and the maximum from 610 to 68.
-The pairwise interface does not explode the same mismatch: unmatched sentences stay whole, which is why the 1754 large-divergence count in Table~\ref{tab:pairwise} is 1,147 words rather than hundreds of one-word sites.
-A further 725 published site cores match every linked reading once long~s is folded.
-Of those, 644 are empty gaps and 81 are non-empty cores that no longer differ after the core has been tightened.
-A published site is therefore not, by itself, a displayed disagreement.
+One of the paragraph links joins passages that are not the same length.
+The 1778 paragraph beginning ``The pulpits likewise were called in aid'' is 62 words, but the paragraph aligned to it is 292 words in 1754 and 252 words in 1762 and 1763.
+Only the 1773 paragraph matches the lemma, at 62 words.
+The comparison does not split a paragraph it has been given, so the extra wording is recorded as places where the 1778 text has nothing between the surrounding words.
+That one link produces 610 sites, 604 of them deletions in the lemma, and those 604 are most of the 791 deletions in the chapter.
+Set that paragraph aside and the mean is 16.4 sites rather than 21.8, and the longest of the rest has 68 sites rather than 610.
+Pairwise comparison leaves the extra sentences whole, which is why Table~\ref{tab:pairwise} counts 1,147 words of large divergence in 1754 rather than hundreds of one-word sites.
+A further 725 sites have a lemma core that matches every linked reading once long~s is set aside: 644 are deletions in the lemma, including the 604 from this paragraph, and 81 are cores tightened until nothing differed.
+A site in the list is therefore not, by itself, a disagreement the editions display.
 
 \section{Discussion}
 
 The Hume corpus is distinctive in its size and publication history, but the workflow is a common one: collect page images, process them into machine-readable data, correct and structure the text, compare differences, and link each segment back to the page.
 The same pipeline can be adapted for another document-based project once corresponding passages can be aligned and the printed page remains available for checking.
-The chapter shows that the two grains are not interchangeable: the pairwise view keeps unmatched sentences whole, while the apparatus turns one over-broad paragraph link into hundreds of empty gaps.
+The chapter shows that the two grains are not interchangeable: the pairwise view keeps unmatched sentences whole, while the apparatus records that extra wording as hundreds of deletions in the lemma rather than as whole blocks.
 
 \textbf{Limitations.}
 Image quality, layout detection, and OCR performance affect the text that annotators must correct, and correction across the wider project remains uneven.
 The evaluation uses one chapter and its existing paragraph links.
 It does not measure precision or recall against a scholar's collation.
-Which variations are historically significant remains for the historian to decide, facsimile rights constrain redistribution, and the same rules have not been tested on other typographies.
+Which variations are historically significant remains for the historian to decide, facsimile rights constrain redistribution, and the same rules have not been tested on other typographies or any other editorial conventions.
 
 \section{Conclusion}
 
 The pipeline carries page images through correction, alignment, and textual comparison while keeping each segment traceable to the printed line.
+Shortlisting sites of variation, and leaving the facsimile available for checking, allows humanities scholars to devote more of their time and effort to interpretive work across the editions.
 
 %% Acknowledgements are omitted from the anonymous review version.
 \begingroup
