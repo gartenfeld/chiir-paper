@@ -152,36 +152,52 @@ The computation narrows the material presented for review; the historian decides
 
 \section{Case Evidence and Walkthrough}
 
-\begin{figure*}[t]
-  \centering
-  \includegraphics[width=\textwidth]{interaction-sequence.png}
-  \caption{Evidence-linked variation browsing through three documented examples. (a) The alignment view links Chapter~I paragraphs across the 1778 and 1762 editions; (b) the comparison view highlights word- and character-level differences in a Charles~I passage from 1762 and 1778; and (c) the candidate view places readings from the passage beginning ``The Scots, who began'' beside edition-specific facsimile evidence. The panels document separate operations, not one recorded session.}
-  \Description{Three interface panels are arranged from left to right. The first places two facsimile pages beside a central column of paragraph-link controls. The second presents two parallel text columns with coloured difference highlights, edition selectors, and page references. The third shows a selected paragraph with marked candidate variations and corresponding page-image evidence for multiple editions.}
-  \label{fig:sequence}
-\end{figure*}
-
-The case evidence consists of the working prototype, the interface artefacts in Figure~\ref{fig:sequence}, and a database snapshot from 11 September 2026.
+The case evidence consists of the working prototype, three interface artefacts (Figures~\ref{fig:align}--\ref{fig:candidate}), and a database snapshot from 11 September 2026.
 The screenshots were selected because they expose the representations at three points in the review path.
 They show related operations and overlapping historical context, but they are separate examples rather than a continuous user session.
 The operational records arose from ordinary project activity rather than an experiment, and prototype use is deployment context rather than participant evidence.
 
 \textbf{Establishing correspondence.}
-Figure~\ref{fig:sequence}a shows Chapter~I, \S1, beginning ``The curiosity, entertained by all civilized nations''.
+Figure~\ref{fig:align} shows Chapter~I, \S1, beginning ``The curiosity, entertained by all civilized nations''.
 The central controls link the paragraph in 1778, volume~I, page~37, with its manifestation in 1762, volume~I, page~15.
 The pages differ in typesetting and pagination, while the link records the logical correspondence that comparison requires.
 The annotator can inspect both page contexts before confirming or correcting that relationship.
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\columnwidth,keepaspectratio]{align-paragraphs.png}
+  \caption{Paragraph alignment links Chapter~I across the 1778 and 1762 editions. Central controls record the correspondence that later comparison requires.}
+  \Description{Two facsimile pages appear side by side with a central column of paragraph-link controls. Corresponding openings of Chapter~I are highlighted on each page, and green link markers connect numbered paragraph units across the 1778 and 1762 editions.}
+  \label{fig:align}
+\end{figure}
+
 \textbf{Inspecting computed difference.}
-Figure~\ref{fig:sequence}b compares a passage about the ``lords of articles'' in Charles~I, Chapter~LV: 1762 page~283 and 1778 page~426.
+Figure~\ref{fig:diff} compares a passage about the ``lords of articles'' in Charles~I, Chapter~LV: 1762 page~283 and 1778 page~426.
 The parallel view highlights local substitutions and insertions, including \emph{Scots}/\emph{Scottish} and the addition of \emph{temporal}.
 These highlights report differences between the current strings.
 They do not by themselves determine whether a reading is authorial, typographical, or introduced by OCR.
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\columnwidth,keepaspectratio]{diff-sentences.png}
+  \caption{Parallel comparison highlights word- and character-level differences in a Charles~I passage from 1762 and 1778.}
+  \Description{Two parallel text columns show a shared Charles~I passage with coloured difference highlights. Edition years, structural breadcrumbs, and page references appear above the columns.}
+  \label{fig:diff}
+\end{figure}
+
 \textbf{Returning to printed evidence.}
-Figure~\ref{fig:sequence}c reorganises a passage beginning ``The Scots, who began these fatal commotions'' around selected candidate readings.
+Figure~\ref{fig:candidate} reorganises a passage beginning ``The Scots, who began these fatal commotions'' around selected candidate readings.
 The interface presents \emph{Scots} for 1778, 1773, 1763, and 1762 against \emph{Scotch} for 1754, and \emph{who began} in 1778 against \emph{who first began} in earlier editions.
 Edition-specific facsimile snippets remain beside the digital readings, allowing each string to be checked against print and in surrounding page context.
 The three examples consequently expose correspondence, computed difference, and source evidence, while leaving their editorial significance unresolved.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\columnwidth,keepaspectratio]{candidate-facsimile.png}
+  \caption{Candidate view for the passage beginning ``The Scots, who began'', with edition-specific facsimile snippets for verification across 1778--1754.}
+  \Description{A paragraph navigator appears on the left, a selected passage with marked candidate readings in the centre, and stacked cropped facsimile lines labelled by edition year on the right.}
+  \label{fig:candidate}
+\end{figure}
 
 The operational snapshot describes the conditions under which this path currently works.
 The incomplete upload contains six editions (1754, 1757, 1762, 1763, 1773, and 1778) and 10,695 page records.
